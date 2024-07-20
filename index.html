@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <span class="title">New Game</span>
+            <span class="subtitle link" id="new_game_1">1 Player (vs. CPU)</span>
+            <span class="subtitle link" id="new_game_2">2 Players</span>
+            <span class="title link" id="quit">Quit</span>
+        </nav>
+
+        <!-- Game -->
+        <div class="game">
+            <div class="players">
+                <div class="p1h">Player 1</div>
+                <div class="p2h">Player 2 <span class="cpu">(CPU)</span></div>
+            </div>
+            <div class="labels">
+                <span class="num"><span class="big">Number</span><span class="small">N</span></span>
+                <!-- <span></span> -->
+                <span class="val"><span class="big">Value</span><span class="small">V</span></span>
+                <span class="pos"><span class="big">Position</span><span class="small">P</span></span>
+                <span class="num"><span class="big">Number</span><span class="small">N</span></span>
+                <!-- <span></span> -->
+                <span class="val"><span class="big">Value</span><span class="small">V</span></span>
+                <span class="pos"><span class="big">Position</span><span class="small">P</span></span>
+            </div>
+            <div class="guesses">
+                <div class="number" id="n1p1">1234</div>
+                <div class="value" id="v1p1">4</div>
+                <div class="position" id="p1p1">0</div>
+                <div class="number" id="n1p2">6542</div>
+                <div class="value" id="v1p2">3</div>
+                <div class="position" id="p1p2">1</div>
+                <div class="number" id="n2p1">1234</div>
+                <div class="value" id="v2p1">4</div>
+                <div class="position" id="p2p1">0</div>
+                <div class="number" id="n2p2">6542</div>
+                <div class="value" id="v2p2">3</div>
+                <div class="position" id="p2p2">1</div>
+            </div>
+            <div class="input">
+                <p class="guess" id="p1guess" contenteditable="true">Player 1 Guess</p>
+                <button id="p1done" onclick="guessed(1)">Done</button>
+                <p class="guess" id="p2guess" contenteditable="false">Player 2 Guess</p>
+                <button id="p2done" onclick="guessed(2)" disabled>Done</button>
+            </div>
+        </div>
+
+
+        <footer class="footer">
+            <div class="display">NVP</div>
+            <div class="spacer"></div>
+            <div class="wrapper">
+                <div class="subtitle">Rules</div>
+                <div class="title link">kmab&copy;</div>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

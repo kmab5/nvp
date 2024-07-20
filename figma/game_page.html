@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>NVP?</title>
+        <style>
+          body > div {
+            width: 99vw;
+          }
+        </style>
+    </head>
+    <body>
+        <div class="GamePage" style="height: 100vh; padding: 8px; background: #E0E0FF; overflow: hidden; flex-direction: column; justify-content: center; align-items: space-evenly; gap: 10px; display: inline-flex">
+            <div class="Header" style="align-self: stretch; padding-left: 80px; padding-right: 80px; padding-top: 56px; padding-bottom: 56px; background: white; border-radius: 45px; overflow: hidden; justify-content: center; align-items: center; gap: 333px; display: inline-flex">
+              <div class="NvpNumberValuePosition" style="color: #10144B; font-size: 32px; font-family: Noto Sans; font-weight: 700; line-height: 48px; word-wrap: break-word">NVP - Number Value Position</div>
+              <div class="Items" style="justify-content: flex-end; align-items: center; gap: 48px; display: flex">
+                <div class="Home" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Home</div>
+                <div class="NewGame" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">New Game</div>
+                <div class="Help" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Help</div>
+                <div class="Button" style="padding-left: 24px; padding-right: 24px; padding-top: 14px; padding-bottom: 14px; background: #10144B; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; justify-content: center; align-items: center; gap: 8px; display: flex">
+                  <div class="More" style="color: white; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">More</div>
+                </div>
+              </div>
+            </div>
+            <div class="Game" style="align-self: stretch; height: 728px; padding-left: 79px; padding-right: 79px; padding-top: 11px; padding-bottom: 11px; background: white; border-radius: 45px; overflow: hidden; flex-direction: column; justify-content: center; align-items: center; gap: 10px; display: flex">
+              <div class="Titles" style="align-self: stretch; padding-left: 150px; padding-right: 150px; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                <div class="YourGuesses" style="color: #10144B; font-size: 20px; font-family: Noto Sans; font-weight: 500; line-height: 30px; word-wrap: break-word">Your Guesses</div>
+                <div class="OpponentSGuesses" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Opponent’s Guesses</div>
+              </div>
+              <div class="Labels" style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 270px; display: inline-flex">
+                <div class="P1" style="flex: 1 1 0; height: 66px; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: flex">
+                  <div class="Number" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Number</div>
+                  <div class="OpponentSGuesses" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Value</div>
+                  <div class="OpponentSGuesses" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Position</div>
+                </div>
+                <div class="P2" style="flex: 1 1 0; height: 66px; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: flex">
+                  <div class="Number" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Number</div>
+                  <div class="OpponentSGuesses" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Value</div>
+                  <div class="OpponentSGuesses" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Position</div>
+                </div>
+              </div>
+              <div class="Guesses" style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 270px; display: inline-flex">
+                <div class="P1Guess" style="flex: 1 1 0; padding-left: 8px; padding-right: 8px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                  <div class="1" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1234</div>
+                    <div class="V1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                    <div class="P1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">0</div>
+                  </div>
+                  <div class="2" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">5678</div>
+                    <div class="V2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                    <div class="V2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                  </div>
+                  <div class="3" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1245</div>
+                    <div class="V3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                    <div class="P3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">0</div>
+                  </div>
+                  <div class="4" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">3487</div>
+                    <div class="V4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">3</div>
+                    <div class="P4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                  </div>
+                  <div class="5" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">4657</div>
+                    <div class="V5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">4</div>
+                    <div class="P5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                  </div>
+                </div>
+                <div class="P2Guess" style="flex: 1 1 0; padding-left: 8px; padding-right: 8px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                  <div class="1" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1234</div>
+                    <div class="V1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                    <div class="P1" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">0</div>
+                  </div>
+                  <div class="2" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">5678</div>
+                    <div class="V2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                    <div class="V2" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                  </div>
+                  <div class="3" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1245</div>
+                    <div class="V3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                    <div class="P3" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">0</div>
+                  </div>
+                  <div class="4" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">3487</div>
+                    <div class="V4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">3</div>
+                    <div class="P4" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">1</div>
+                  </div>
+                  <div class="5" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: space-between; align-items: center; display: inline-flex">
+                    <div class="N5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">4657</div>
+                    <div class="V5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">4</div>
+                    <div class="P5" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">2</div>
+                  </div>
+                </div>
+              </div>
+              <div class="Guess" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: flex-start; align-items: center; gap: 270px; display: inline-flex">
+                <div class="P1Place" style="flex: 1 1 0; height: 52px; padding-left: 8px; padding-right: 8px; justify-content: space-between; align-items: flex-start; display: flex">
+                  <div class="Input" style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px; background: white; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; border: 1px #E1E0F9 solid; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+                    <div class="Guess" style="width: 263px; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Guess</div>
+                  </div>
+                  <div class="Submit" style="padding-left: 24px; padding-right: 24px; padding-top: 14px; padding-bottom: 14px; background: #10144B; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; justify-content: center; align-items: center; gap: 8px; display: flex">
+                    <div class="Submit" style="color: white; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Submit</div>
+                  </div>
+                </div>
+                <div class="P2Place" style="flex: 1 1 0; height: 48px; padding-left: 8px; padding-right: 8px; justify-content: space-between; align-items: flex-start; display: flex">
+                  <div class="Input" style="flex: 1 1 0; height: 48px; padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px; background: white; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; border: 1px #E1E0F9 solid; justify-content: flex-start; align-items: center; gap: 8px; display: flex">
+                    <div class="Guessed" style="width: 263px; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Opponent has guessed.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="Scores" style="align-self: stretch; padding-top: 18px; padding-bottom: 18px; justify-content: flex-start; align-items: center; gap: 270px; display: inline-flex">
+                <div class="P1Score" style="flex: 1 1 0; height: 48px; padding-left: 8px; padding-right: 8px; justify-content: space-between; align-items: center; display: flex">
+                  <div class="P1S" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Player 1 Score:</div>
+                  <div class="Score" style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px; background: white; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; border: 1px #E1E0F9 solid; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+                    <div class="ScoreText" style="width: 263px; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">P1 Score</div>
+                  </div>
+                </div>
+                <div class="P2Score" style="flex: 1 1 0; height: 48px; padding-left: 8px; padding-right: 8px; justify-content: space-between; align-items: center; display: flex">
+                  <div class="P2S" style="color: #10144B; font-size: 20px; font-family: Inter; font-weight: 500; line-height: 30px; word-wrap: break-word">Player 1 Score:</div>
+                  <div class="Score" style="padding-left: 16px; padding-right: 16px; padding-top: 12px; padding-bottom: 12px; background: white; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; border: 1px #E1E0F9 solid; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+                    <div class="ScoreText" style="width: 263px; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">P1 Score</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="Footer" style="width: 1385px; height: 264px; position: relative; background: white; border-radius: 45px; overflow: hidden">
+              <div class="Items" style="height: 168px; left: 909px; top: 48px; position: absolute; flex-direction: column; justify-content: center; align-items: flex-end; gap: 24px; display: inline-flex">
+                <div class="Games" style="align-self: stretch; color: #10144B; font-size: 16px; font-family: Inter; font-weight: 700; line-height: 24px; word-wrap: break-word">Games</div>
+                <div class="Nvp" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">NVP</div>
+                <div class="GebeTa" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Gebe’ta</div>
+                <div class="Wip" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">[WIP]</div>
+              </div>
+              <div class="Items" style="height: 168px; left: 1118px; top: 48px; position: absolute; flex-direction: column; justify-content: center; align-items: flex-end; gap: 24px; display: inline-flex">
+                <div class="Kmab" style="align-self: stretch; color: #10144B; font-size: 16px; font-family: Inter; font-weight: 700; line-height: 24px; word-wrap: break-word">kmab</div>
+                <div class="AboutMe" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">About Me</div>
+                <div class="ContRActMe" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Cont[r]act Me</div>
+                <div class="BuyMeCoffee" style="align-self: stretch; color: #5C5D72; font-size: 16px; font-family: Inter; font-weight: 500; line-height: 24px; word-wrap: break-word">Buy Me Coffee!</div>
+              </div>
+              <div class="NvpNumberValuePosition" style="left: 80px; top: 52px; position: absolute; color: #10144B; font-size: 24px; font-family: Noto Sans; font-weight: 700; line-height: 36px; word-wrap: break-word">NVP - Number Value Position</div>
+              <div class="SocialIcons" style="left: 80px; top: 176px; position: absolute; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding-left: 2px; padding-right: 2px; padding-top: 2.04px; padding-bottom: 2.04px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 20px; height: 19.92px" src="https://via.placeholder.com/20x20" />
+                  </div>
+                </div>
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding: 3px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 18px; height: 18px" src="https://via.placeholder.com/18x18" />
+                  </div>
+                </div>
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding-left: 2px; padding-right: 2px; padding-top: 5px; padding-bottom: 5px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 20px; height: 14px" src="https://via.placeholder.com/20x14" />
+                  </div>
+                </div>
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding: 2px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 20px; height: 20px" src="https://via.placeholder.com/20x20" />
+                  </div>
+                </div>
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding-top: 2.42px; padding-bottom: 2.07px; padding-left: 2.45px; padding-right: 1.55px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 20px; height: 19.52px" src="https://via.placeholder.com/20x20" />
+                  </div>
+                </div>
+                <div class="ButtonsIcon" style="width: 40px; height: 40px; padding: 8px; border-radius: 4px; justify-content: center; align-items: center; display: flex">
+                  <div class="Icon" style="flex: 1 1 0; align-self: stretch; padding-top: 2.42px; padding-bottom: 1.58px; padding-left: 2.45px; padding-right: 1.55px; justify-content: center; align-items: center; display: inline-flex">
+                    <img alt="Image" class="Icon" style="width: 20px; height: 20px" src="https://via.placeholder.com/20x20" />
+                  </div>
+                </div>
+              </div>
+              <div class="Divider" style="width: 1280px; height: 0px; left: 80px; top: 1px; position: absolute; border: 1px white solid"></div>
+            </div>
+          </div>
+    </body>
+</html>

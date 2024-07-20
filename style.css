@@ -1,0 +1,204 @@
+@media (min-width: 2440px) {
+    :root {
+        font-size: 60px;
+        --rem: 60px;
+    }
+}
+
+@media (max-width: 2440px) {
+    :root {
+        font-size: 48px;
+        --rem: 48px;
+    }
+}
+
+@media (max-width: 1800px) {
+    :root {
+        font-size: 40px;
+        --rem: 40px;
+    }
+}
+
+@media (max-width: 1440px) {
+    :root {
+        font-size: 32px;
+        --rem: 32px;
+    }
+}
+
+@media (max-width: 1080px) {
+    :root {
+        font-size: 20px;
+        --rem: 20px;
+    }   
+}
+
+@media (max-width: 640px) {
+    :root {
+        font-size: 16px;
+        --rem: 16px;
+    }   
+}
+
+@media (max-width: 400px) {
+    :root {
+        font-size: 12px;
+        --rem: 12px;
+    }   
+}
+
+@media (max-width: 280px) {
+    :root {
+        font-size: 8px;
+        --rem: 8px;
+    }   
+}
+
+*, *::after, *::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    transition: all 130ms ease-in-out;
+    font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.disabled {
+    display: none;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content min-content auto;
+    justify-content: start;
+    gap: 1rem;
+    align-items: start;
+    text-align: center;
+    height: 100vh;
+}
+
+.game {
+    width: 100%;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    /* grid-template-rows: repeat(auto-fit, 1fr); */
+    gap: 0.4rem;
+}
+
+.players {
+    display: flex;
+    justify-content: space-around;
+    grid-column: span 8;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.labels, .guesses, .input {
+    /* padding: 0.4rem; */
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / 9;
+    gap: 0.4rem;
+    text-align: left;
+}
+
+.labels {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.guesses:nth-child(2n) {
+    background-color: #000;
+}
+
+.guesses:nth-child(2n + 1) {
+    background-color: #ddd;
+}
+
+.guess {
+    grid-column: span 3;
+    border: 1px #5555;
+    text-align: left;
+}
+
+.num, .number {
+    grid-column: span 2;
+}
+
+button {
+    border: none;
+    background-color: #ddda;
+    padding: 0.2rem;
+    border-radius: 0.2rem;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    font-size: inherit;
+}
+
+button:hover {
+    background-color: #aaaa;
+}
+
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem;
+}
+
+.display {
+    font-weight: 700;
+    font-size: 2.4rem;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.subtitle {
+    font-weight: 400;
+    font-size: 1.1rem;
+}
+
+.text {
+    font-weight: 350;
+    font-size: 0.9rem;
+}
+
+.link {
+    color: #333;
+    cursor: pointer;
+}
+
+footer {
+    width: 100%;
+    display: flex;
+    padding: 1rem;
+    justify-content: space-evenly;
+    align-items: center;
+    align-self: end;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-grow: 1;
+    gap: 2rem;
+}
+
+footer:first-child {
+    flex-grow: 1;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
