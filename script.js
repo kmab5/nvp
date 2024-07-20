@@ -86,6 +86,8 @@ function newgame(mode){
 
 // make the evaluate function
 
+// make the menu option for phones
+
 // Prepare the rules popup
 
 
