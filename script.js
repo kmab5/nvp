@@ -8,6 +8,7 @@ const p1input = document.querySelector("#p1guess");
 const p1btn = document.querySelector("#p1done");
 const p2input = document.querySelector("#p2guess");
 const p2btn = document.querySelector("#p2done");
+const theme = document.querySelector("#theme");
 var cpu = false;
 
 var player1 = {};
@@ -15,7 +16,7 @@ var player2 = {};
 
 
 window.onload = () => {
-    if(window.innerWidth < 480){
+    if(window.innerWidth < 520){
         big_labels.forEach(label => label.classList.add("disabled"));
     } else {
         small_labels.forEach(label => label.classList.add("disabled"));
@@ -29,7 +30,7 @@ window.onload = () => {
 };
 
 window.addEventListener('resize', e => {
-    if(window.innerWidth < 480){
+    if(window.innerWidth < 520){
         big_labels.forEach(label => label.classList.add("disabled"));
         small_labels.forEach(label => label.classList.remove("disabled"));
     }else{
@@ -40,6 +41,47 @@ window.addEventListener('resize', e => {
     console.log(window.innerWidth);
 });
 
+p1btn.addEventListener("mouseover", e => p1btn.classList.add("active"));
+p1btn.addEventListener("mouseout", e => p1btn.classList.remove("active"));
+p2btn.addEventListener("mouseover", e => p2btn.classList.add("active"));
+p2btn.addEventListener("mouseout", e => p2btn.classList.remove("active"));
+
+const colors = [
+    ["var(--dark)", "var(--primary-light)", "var(--primary-container-dark)", "var(--light)", "var(--primary-container-light)", "var(--dark-container)", "var(--primary-dark)", "var(--light-container)"],
+    ["var(--light)", "var(--primary-dark)", "var(--primary-container-light)", "var(--dark)", "var(--primary-container-dark)", "var(--light-container)", "var(--primary-light)", "var(--dark-container)"]
+];
+
+function colorUpdate(mode){ // 0 - Light, 1 - Dark
+    document.querySelector(".container").style.setProperty("color", colors[mode][0]);
+    document.querySelector(".container").style.setProperty("background-color", colors[mode][1]);
+    document.querySelector(".game").style.setProperty("color", colors[mode][0]);
+    document.querySelector(".game").style.setProperty("background-color", colors[mode][2]);
+    document.querySelectorAll("button").forEach(but => but.style.setProperty("color", colors[mode][3]));
+    document.querySelectorAll("button").forEach(but => but.style.setProperty("background-color", colors[mode][4]));
+    document.querySelector(".nav").style.setProperty("color", colors[mode][0]);
+    document.querySelector(".nav").style.setProperty("background-color", colors[mode][7]);
+    document.querySelectorAll(".link").forEach(link => link.style.setProperty("color", colors[mode][5]));
+    document.querySelectorAll(".tab").forEach(tab => tab.style.setProperty("border-bottom", `0.08rem solid ${colors[mode][0]}`));
+}
+
+theme.addEventListener("change", e => {
+    if(theme.checked) {
+        console.log("Light Mode");
+        colorUpdate(0);
+    }else{
+        console.log("Dark Mode");
+        colorUpdate(1);
+    }
+});
+
+function check_number(num){
+    if(true){
+        return false;
+    }
+    return true;
+}
+
+
 function update(){
     var guess_string = "";
     for(let i = 0; i < Math.max(player1.guesses.length, player2.guesses.length); i++){
@@ -49,13 +91,21 @@ function update(){
             p2guess = player2.guesses[i] || "<span class='text'>No Guess</span>", 
             p2value = player2.values[i] || "<span class='text'>Not Evaluated</span>", 
             p2position = player2.positions[i] || "<span class='text'>Not Evaluated</span>";
-        guess_string += `<div class="number" id="n${i+1}p1">${p1guess}</div><div class="value" id="v${i+1}p1">${p1value}</div><div class="position" id="p${i+1}p1">${p1position}</div><div class="number" id="n${i+1}p2">${p2guess}</div><div class="value" id="v${i+1}p2">${p2value}</div><div class="position" id="p${i+1}p2">${p2position}</div>`;
+        guess_string += `<div class="number tab" id="n${i+1}p1">${p1guess}</div><div class="value tab" id="v${i+1}p1">${p1value}</div><div class="position tab" id="p${i+1}p1">${p1position}</div><div class="number tab" id="n${i+1}p2">${p2guess}</div><div class="value tab" id="v${i+1}p2">${p2value}</div><div class="position tab" id="p${i+1}p2">${p2position}</div>`;
     }
     guesses.innerHTML = guess_string;
 }
 
 
 function newgame(mode){
+    let p1n = prompt("Player 1, enter your number:");
+    let p2n = prompt("Player 2, enter your number:");
+    if(!check_number(p1n) || !check_number(p2n)) {
+        alert("Wrong number input. Please Check the rules.");
+        return newgame(mode);
+    }
+    p1input.innerHTML = "Player 1 Guess";
+    p2input.innerHTML = "Player 2 Guess";
     if(mode == 1){
         cpu = true;
         p2input.setAttribute("contenteditable", false);
@@ -66,21 +116,23 @@ function newgame(mode){
         p2btn.removeAttribute("disabled");
     }
     player1 = {
-        guesses: [1234, 2546],
-        values: [2, 5],
-        positions: [5, 5]
+        number: "1234",
+        guesses: [1351, 5645, 5464],
+        values: [21, 56, 7],
+        positions: [54, 65]
     };
     player2 = {
-        guesses: [5641],
-        values: [3],
-        positions: [5]
+        number: "5431",
+        guesses: [1351, 5645, 5464],
+        values: [4, 6],
+        positions: [64, 54, 5]
     };
     update();
 }
 
 // Check for the rules in the guessed function
 
-// Add a functionality that disables the utton after guessing waiting for the other player
+// Add tooltips
 
 // Add a CPU **
 
@@ -90,24 +142,83 @@ function newgame(mode){
 
 // Prepare the rules popup
 
-
 function guessed(player){
     if(player == 1){
-        player1.guesses.push(parseInt(p1input.innerHTML));
+        if(!check_number(p1input.innerHTML)) return alert("Wrong number input. Please read the rules");
+        player1.guesses.push(p1input.innerHTML);
+        p1btn.toggleAttribute("disabled");
+        update();
+        if(p2btn.hasAttribute("disabled")) {
+            console.groupCollapsed("Guessed");
+            console.log("Evaluating");
+            evaluate();
+            p1btn.removeAttribute("disabled");
+            p2btn.removeAttribute("disabled");
+        }
     }else{
-        player2.guesses.push(parseInt(p2input.innerHTML));
+        if(!check_number(p1input.innerHTML)) return alert("Wrong number input. Please read the rules");
+        player2.guesses.push(p2input.innerHTML);
+        p2btn.toggleAttribute("disabled");
+        update();
+        if(p1btn.hasAttribute("disabled")) {
+            console.groupCollapsed("Guessed");
+            console.log("Evaluating");
+            evaluate();
+            p1btn.removeAttribute("disabled");
+            p2btn.removeAttribute("disabled");
+        }
     }
-    update();
-    console.table(player1);
-    console.table(player2);
 }
 
 function evaluate(){
-
+    let p1n = player1.number;
+    let p2g = player2.guesses[player2.guesses.length - 1];
+    let p2n = player2.number;
+    let p1g = player1.guesses[player1.guesses.length - 1];
+    console.log(`P1 Number: ${p1n}\nP2 Guess: ${p2g}\nP2 Number: ${p2n}\nP1 Guess: ${p1g}\n`);
+    if(p1n == p2g){
+        if(p2n == p1g){
+            gameover(3);
+        }
+        gameover(2);
+    }else if(p2n == p1g){
+        gameover(1);
+    }else{
+        let p1v = 0, p1p = 0, p2v = 0, p2p = 0;
+        for(let i = 0; i < 4; i++){
+            if(p2n.includes(p1g[i])){
+                p1v++;
+                if(p1g[i] == p2n[i]) p1p++;
+            }
+            if(p1n.includes(p2g[i])){
+                p2v++;
+                if(p2g[i] == p1n[i]) p2p++;
+            }
+        }
+        player1.values.push(p1v.toString());
+        player2.values.push(p2v.toString());
+        player1.positions.push(p1p.toString());
+        player2.positions.push(p2p.toString());
+        console.table({
+            "P1 Value": p1v,
+            "P1 Position": p1p,
+            "P2 Value": p2v,
+            "P2 Position": p2p
+        });
+    }
+    console.log("Evaluated");
+    console.groupEnd();
+    update();
 }
 
-function gameover(){
+// state = 
+// 1 - player 1 win
+// 2 - player 2 win
+// 3 - tie
 
+function gameover(state){
+    console.log(`State: ${state}`);
+    newgame(2);
 }
 
 newgame(2);
