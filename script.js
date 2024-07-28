@@ -1,3 +1,4 @@
+const body = document.querySelector("body");
 const big_labels = document.querySelectorAll(".big");
 const small_labels = document.querySelectorAll(".small");
 const cpu_label = document.querySelector(".cpu");
@@ -9,6 +10,7 @@ const p1btn = document.querySelector("#p1done");
 const p2input = document.querySelector("#p2guess");
 const p2btn = document.querySelector("#p2done");
 const theme = document.querySelector("#theme");
+const rules = document.querySelector("#rules");
 var cpu = false;
 
 var player1 = {};
@@ -75,9 +77,9 @@ theme.addEventListener("change", e => {
 });
 
 function check_number(num){
-    if(true){
-        return false;
-    }
+    if(num.length != 4) return false;
+    if((/[^1-9]/g).test(num)) return false;
+    if((/([1-9]+)(?=.*\1)/gm).test(num)) return false;
     return true;
 }
 
@@ -97,13 +99,193 @@ function update(){
 }
 
 
-function newgame(mode){
-    let p1n = prompt("Player 1, enter your number:");
-    let p2n = prompt("Player 2, enter your number:");
-    if(!check_number(p1n) || !check_number(p2n)) {
-        alert("Wrong number input. Please Check the rules.");
-        return newgame(mode);
+function tooltip(info, play = 0){
+    if(info == 1){
+        let wrapper = document.createElement("div");
+        let bg = document.createElement("div");
+        let head = document.createElement("div");
+        let info = document.createElement("div");
+        let close = document.createElement("button");
+        wrapper.classList.add("tooltip");
+        wrapper.classList.add("wrapper");
+        bg.classList.add("tooltip");
+        bg.classList.add("bg");
+        head.classList.add("tooltip");
+        head.classList.add("head");
+        info.classList.add("tooltip");
+        info.classList.add("info");
+        close.classList.add("tooltip");
+        close.classList.add("close");
+        close.addEventListener("click", e => close_tooltip(1));
+
+        head.innerText = "Rules";
+        info.innerText = "Rule #1: Use only numbers from 1 up to 9, do NOT use 0\nRule #2: Do NOT repeat numbers\nRule #3: That's it! Have fun!";
+        close.innerText = "Done";
+
+        bg.appendChild(head);
+        bg.appendChild(info);
+        bg.appendChild(close);
+
+        wrapper.appendChild(bg);
+
+        body.appendChild(wrapper);
+    }else if(info == 2){
+        let wrapper = document.createElement("div");
+        let bg = document.createElement("div");
+        let head = document.createElement("div");
+        let info = document.createElement("div");
+        let user_input = document.createElement("input");
+        let close = document.createElement("button");
+        wrapper.classList.add("tooltip");
+        wrapper.classList.add("wrapper");
+        bg.classList.add("tooltip");
+        bg.classList.add("bg");
+        head.classList.add("tooltip");
+        head.classList.add("head");
+        info.classList.add("tooltip");
+        info.classList.add("info");
+        user_input.classList.add("tooltip");
+        user_input.classList.add("box");
+        user_input.classList.add("text");
+        close.classList.add("tooltip");
+        close.classList.add("close");
+
+        user_input.type = "password";
+        user_input.name = "password";
+        user_input.id = "password";
+
+        close.addEventListener("click", e => close_tooltip(2, play));
+
+        if(play == 1){
+            head.innerText = "Player 1";
+            info.innerText = "Enter your number!\nRule #1: Use only numbers from 1 up to 9, do NOT use 0\nRule #2: Do NOT repeat numbers\nRule #3: That's it! Have fun!";
+        }else{
+            head.innerText = "Player 2";
+            info.innerText = "Enter your number!\nRule #1: Use only numbers from 1 up to 9, do NOT use 0\nRule #2: Do NOT repeat numbers\nRule #3: That's it! Have fun!";
+        }
+        
+
+        close.innerText = "Done";
+
+        bg.appendChild(head);
+        bg.appendChild(info);
+        bg.appendChild(user_input);
+        bg.appendChild(close);
+
+        wrapper.appendChild(bg);
+
+        body.appendChild(wrapper);
+    }else if(info == 3){
+        let wrapper = document.createElement("div");
+        let bg = document.createElement("div");
+        let head = document.createElement("div");
+        let info = document.createElement("div");
+        let close = document.createElement("button");
+        wrapper.classList.add("tooltip");
+        wrapper.classList.add("wrapper");
+        bg.classList.add("tooltip");
+        bg.classList.add("bg");
+        head.classList.add("tooltip");
+        head.classList.add("head");
+        info.classList.add("tooltip");
+        info.classList.add("info");
+        close.classList.add("tooltip");
+        close.classList.add("close");
+        close.addEventListener("click", e => close_tooltip(1));
+
+        head.innerText = "Error";
+        info.innerText = "You have made an error when you inputted. Please check the rules at the bottom of the page and try again.";
+        close.innerText = "Got it!";
+
+        bg.appendChild(head);
+        bg.appendChild(info);
+        bg.appendChild(close);
+
+        wrapper.appendChild(bg);
+
+        body.appendChild(wrapper);
+    }else if(info == 4){
+        let wrapper = document.createElement("div");
+        let bg = document.createElement("div");
+        let head = document.createElement("div");
+        let info = document.createElement("div");
+        let close = document.createElement("button");
+        wrapper.classList.add("tooltip");
+        wrapper.classList.add("wrapper");
+        bg.classList.add("tooltip");
+        bg.classList.add("bg");
+        head.classList.add("tooltip");
+        head.classList.add("head");
+        info.classList.add("tooltip");
+        info.classList.add("info");
+        close.classList.add("tooltip");
+        close.classList.add("close");
+        close.addEventListener("click", e => close_tooltip(1));
+
+        head.innerText = "Game Over!";
+        info.innerText = `Congrats Player ${play}! You Guessed Correctly! To play again, choose from the Navigation Bar at the top!`;
+        close.innerText = "YAY!";
+
+        bg.appendChild(head);
+        bg.appendChild(info);
+        bg.appendChild(close);
+
+        wrapper.appendChild(bg);
+
+        body.appendChild(wrapper);
+    }else if(info == 5){
+        let wrapper = document.createElement("div");
+        let bg = document.createElement("div");
+        let head = document.createElement("div");
+        let info = document.createElement("div");
+        let close = document.createElement("button");
+        wrapper.classList.add("tooltip");
+        wrapper.classList.add("wrapper");
+        bg.classList.add("tooltip");
+        bg.classList.add("bg");
+        head.classList.add("tooltip");
+        head.classList.add("head");
+        info.classList.add("tooltip");
+        info.classList.add("info");
+        close.classList.add("tooltip");
+        close.classList.add("close");
+        close.addEventListener("click", e => close_tooltip(1));
+
+        head.innerText = "Game Over!";
+        info.innerText = `ITS A TIE! Wow, what a game! Your mental prowess (or luck) is equal to that of eachother! Better luck next time!`;
+        close.innerText = "Let's do it again!";
+
+        bg.appendChild(head);
+        bg.appendChild(info);
+        bg.appendChild(close);
+
+        wrapper.appendChild(bg);
+
+        body.appendChild(wrapper);
     }
+}
+
+function close_tooltip(inp, play=0){
+    if(inp != 1){
+        if(!check_number(document.querySelector("#password").value)) return;
+        if(play == 1){
+            player1.number = document.querySelector("#password").value;
+            document.querySelector(".tooltip.wrapper").remove();
+            tooltip(2, 2);
+            return;
+        }else if(play == 2){
+            player2.number = document.querySelector("#password").value;
+            document.querySelector(".tooltip.wrapper").remove();
+            return;
+        }
+    }
+    document.querySelector(".tooltip.wrapper").remove();
+}
+
+rules.addEventListener("click", e => tooltip(1));
+
+function newgame(mode){
+    tooltip(2, 1);
     p1input.innerHTML = "Player 1 Guess";
     p2input.innerHTML = "Player 2 Guess";
     if(mode == 1){
@@ -116,53 +298,45 @@ function newgame(mode){
         p2btn.removeAttribute("disabled");
     }
     player1 = {
-        number: "1234",
-        guesses: [1351, 5645, 5464],
-        values: [21, 56, 7],
-        positions: [54, 65]
+        number: "",
+        guesses: [],
+        values: [],
+        positions: []
     };
     player2 = {
-        number: "5431",
-        guesses: [1351, 5645, 5464],
-        values: [4, 6],
-        positions: [64, 54, 5]
+        number: "",
+        guesses: [],
+        values: [],
+        positions: []
     };
     update();
 }
 
-// Check for the rules in the guessed function
-
-// Add tooltips
-
 // Add a CPU **
-
-// make the evaluate function
 
 // make the menu option for phones
 
-// Prepare the rules popup
-
 function guessed(player){
     if(player == 1){
-        if(!check_number(p1input.innerHTML)) return alert("Wrong number input. Please read the rules");
+        if(!check_number(p1input.innerHTML)) return tooltip(3);
         player1.guesses.push(p1input.innerHTML);
         p1btn.toggleAttribute("disabled");
         update();
         if(p2btn.hasAttribute("disabled")) {
-            console.groupCollapsed("Guessed");
-            console.log("Evaluating");
+            // console.groupCollapsed("Guessed");
+            // console.log("Evaluating");
             evaluate();
             p1btn.removeAttribute("disabled");
             p2btn.removeAttribute("disabled");
         }
     }else{
-        if(!check_number(p1input.innerHTML)) return alert("Wrong number input. Please read the rules");
+        if(!check_number(p2input.innerHTML)) return tooltip(3);
         player2.guesses.push(p2input.innerHTML);
         p2btn.toggleAttribute("disabled");
         update();
         if(p1btn.hasAttribute("disabled")) {
-            console.groupCollapsed("Guessed");
-            console.log("Evaluating");
+            // console.groupCollapsed("Guessed");
+            // console.log("Evaluating");
             evaluate();
             p1btn.removeAttribute("disabled");
             p2btn.removeAttribute("disabled");
@@ -175,54 +349,52 @@ function evaluate(){
     let p2g = player2.guesses[player2.guesses.length - 1];
     let p2n = player2.number;
     let p1g = player1.guesses[player1.guesses.length - 1];
-    console.log(`P1 Number: ${p1n}\nP2 Guess: ${p2g}\nP2 Number: ${p2n}\nP1 Guess: ${p1g}\n`);
+    // console.log(`P1 Number: ${p1n}\nP2 Guess: ${p2g}\nP2 Number: ${p2n}\nP1 Guess: ${p1g}\n`);
+    let p1v = 0, p1p = 0, p2v = 0, p2p = 0;
+    for(let i = 0; i < 4; i++){
+        if(p2n.includes(p1g[i])){
+            p1v++;
+            if(p1g[i] == p2n[i]) p1p++;
+        }
+        if(p1n.includes(p2g[i])){
+            p2v++;
+            if(p2g[i] == p1n[i]) p2p++;
+        }
+    }
+    player1.values.push(p1v.toString());
+    player2.values.push(p2v.toString());
+    player1.positions.push(p1p.toString());
+    player2.positions.push(p2p.toString());
+    // console.table({
+        // "P1 Value": p1v,
+        // "P1 Position": p1p,
+        // "P2 Value": p2v,
+        // "P2 Position": p2p
+    // });
+    // console.log("Evaluated");
+    // console.groupEnd();
+    update();
     if(p1n == p2g){
         if(p2n == p1g){
-            gameover(3);
+            gameover(5);
+            return;
         }
-        gameover(2);
+        gameover(4, 2);
     }else if(p2n == p1g){
-        gameover(1);
-    }else{
-        let p1v = 0, p1p = 0, p2v = 0, p2p = 0;
-        for(let i = 0; i < 4; i++){
-            if(p2n.includes(p1g[i])){
-                p1v++;
-                if(p1g[i] == p2n[i]) p1p++;
-            }
-            if(p1n.includes(p2g[i])){
-                p2v++;
-                if(p2g[i] == p1n[i]) p2p++;
-            }
-        }
-        player1.values.push(p1v.toString());
-        player2.values.push(p2v.toString());
-        player1.positions.push(p1p.toString());
-        player2.positions.push(p2p.toString());
-        console.table({
-            "P1 Value": p1v,
-            "P1 Position": p1p,
-            "P2 Value": p2v,
-            "P2 Position": p2p
-        });
+        gameover(4, 1);
     }
-    console.log("Evaluated");
-    console.groupEnd();
-    update();
 }
 
-// state = 
-// 1 - player 1 win
-// 2 - player 2 win
-// 3 - tie
+// state = 4 - win, 5 - tie
+// play = 1 - player 1 win
+// play = 2 - player 2 win
 
-function gameover(state){
-    console.log(`State: ${state}`);
-    newgame(2);
+function gameover(state, play=0){
+    // console.log(`State: ${state}`);
+    tooltip(state, play);
 }
 
 newgame(2);
 
 vscpu.addEventListener("click", e => newgame(1));
 pvp.addEventListener("click", e => newgame(2));
-

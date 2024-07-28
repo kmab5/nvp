@@ -1,21 +1,21 @@
 @media (min-width: 2440px) {
     :root {
-        font-size: 60px;
-        --rem: 60px;
-    }
-}
-
-@media (max-width: 2440px) {
-    :root {
         font-size: 48px;
         --rem: 48px;
     }
 }
 
-@media (max-width: 1800px) {
+@media (max-width: 2440px) {
     :root {
         font-size: 40px;
         --rem: 40px;
+    }
+}
+
+@media (max-width: 1800px) {
+    :root {
+        font-size: 36px;
+        --rem: 36px;
     }
 }
 
@@ -68,7 +68,7 @@
     --secondary-container-light: hsl(90, 100%, 20%);
     --secondary-bg-light: hsla(90, 100%, 40%, 0.25);
     --primary-dark: hsl(50, 50%, 10%);
-    --primary-container-dark: hsl(50, 100%, 25%);
+    --primary-container-dark: hsl(50, 100%, 70%);
     --secondary-dark: hsl(90, 100%, 60%);
     --secondary-container-dark: hsl(90, 100%, 80%);
     --secondary-bg-dark: hsla(90, 100%, 60%, 0.25);
@@ -129,6 +129,7 @@
     padding: 0.4rem;
     display: grid;
     grid-template-columns: subgrid;
+    /* Subgrid compatibility on Phone */
     grid-column: 1 / 9;
     gap: 0.4rem;
     text-align: left;
@@ -172,7 +173,12 @@ button {
 }
 
 .active {
-    border-radius: 0;
+    border-radius: 0.1rem;
+    background-color: var(--primary-dark);
+}
+
+button:hover {
+    border-radius: 0.1rem;
     background-color: var(--primary-dark);
 }
 
@@ -232,16 +238,60 @@ footer {
     gap: 2rem;
 }
 
-footer:first-child {
-    flex-grow: 1;
-}
-
 .spacer {
     flex-grow: 1;
 }
 
 
+.tooltip.wrapper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    background-color: hsla(225, 5%, 16%, 0.933);
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.tooltip.bg {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    text-align: center;
+    background-color: hsl(218, 11%, 86%);
+    justify-content: center;
+    align-items: center;
+    width: clamp(30ch, 50%, 75ch);
+    gap: 1rem;
+    border-radius: 0.4rem;
+}
+
+.tooltip.box {
+    border: none;
+    border-radius: 0.4rem;
+    padding: calc(var(--rem) * 0.4);
+    width: 100%;
+    height: auto;
+}
+
+.tooltip.box:focus {
+    border-radius: 0.1rem;
+}
+
+.tooltip.close {
+    width: clamp(33%, 50%, 100%);
+}
+
+
 /* Inserted toggle animation */
+
 /* Credits go to: Madflows on UIVerse */
 
 .toggle-switch {
