@@ -11,7 +11,9 @@ const p2input = document.querySelector("#p2guess");
 const p2btn = document.querySelector("#p2done");
 const theme = document.querySelector("#theme");
 const rules = document.querySelector("#rules");
+const menu = document.querySelector("#menu");
 var cpu = false;
+var color_mode = 0;
 
 var player1 = {};
 var player2 = {};
@@ -28,6 +30,16 @@ window.onload = () => {
         cpu_label.classList.add("disabled");
     }
 
+    if(window.innerWidth < 480){
+        document.querySelector(".nav").classList.add("drop");
+        document.querySelector(".nav").classList.remove("full");
+        document.querySelector(".dropdown").style.setProperty("display", "flex");
+    }else{
+        document.querySelector(".nav").classList.add("full");
+        document.querySelector(".nav").classList.remove("drop");
+        document.querySelector(".dropdown").style.setProperty("display", "none");
+    }
+
     document.querySelector(".container").style.setProperty("height", window.innerHeight);
 };
 
@@ -39,8 +51,27 @@ window.addEventListener('resize', e => {
         big_labels.forEach(label => label.classList.remove("disabled"));
         small_labels.forEach(label => label.classList.add("disabled"));
     }
+
+    if(window.innerWidth < 480) {
+        document.querySelector(".nav").classList.add("drop");
+        document.querySelector(".dropdown").style.setProperty("display", "flex");
+    }else{
+        document.querySelector(".nav").classList.remove("drop");
+        document.querySelector(".dropdown").style.setProperty("display", "none");
+    }
+
     document.querySelector(".container").style.setProperty("height", window.innerHeight);
     console.log(window.innerWidth);
+});
+
+menu.addEventListener("click", e => {
+    if(document.querySelector(".nav").classList.contains("dropped")){
+        document.querySelector(".nav").classList.remove("dropped");
+        menu.src = "./assets/menu_"+ color_mode +".png";
+    }else{
+        document.querySelector(".nav").classList.add("dropped");
+        menu.src = "./assets/cross_"+ color_mode +".png";
+    }
 });
 
 p1btn.addEventListener("mouseover", e => p1btn.classList.add("active"));
@@ -54,6 +85,7 @@ const colors = [
 ];
 
 function colorUpdate(mode){ // 0 - Light, 1 - Dark
+    color_mode = mode;
     document.querySelector(".container").style.setProperty("color", colors[mode][0]);
     document.querySelector(".container").style.setProperty("background-color", colors[mode][1]);
     document.querySelector(".game").style.setProperty("color", colors[mode][0]);
@@ -64,6 +96,7 @@ function colorUpdate(mode){ // 0 - Light, 1 - Dark
     document.querySelector(".nav").style.setProperty("background-color", colors[mode][7]);
     document.querySelectorAll(".link").forEach(link => link.style.setProperty("color", colors[mode][5]));
     document.querySelectorAll(".tab").forEach(tab => tab.style.setProperty("border-bottom", `0.08rem solid ${colors[mode][0]}`));
+    menu.src = menu.src.toString().substring(0, (menu.src.toString().length - 5)) + mode.toString() + ".png";
 }
 
 theme.addEventListener("change", e => {

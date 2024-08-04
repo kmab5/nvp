@@ -196,6 +196,34 @@ button:hover {
     color: var(--dark);
 }
 
+.nav.full {
+    flex-direction: row;
+    height: 100%;
+}
+
+.nav.drop {
+    flex-direction: column;
+}
+
+#menu {
+    padding: 0.8rem;
+    width: 4rem;
+    height: 4rem;
+}
+
+.nav.drop > *:not(:first-child) {
+    display: none;
+    background-color: aqua;
+}
+
+.nav.drop.dropped {
+    height: 100vh;
+}
+
+.nav.drop.dropped > *:not(:first-child) {
+    display: inline-flex;
+}
+
 .display {
     font-weight: 700;
     font-size: 2.4rem;
