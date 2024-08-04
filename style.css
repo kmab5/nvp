@@ -128,12 +128,24 @@
 .labels, .guesses, .input {
     padding: 0.4rem;
     display: grid;
-    grid-template-columns: subgrid;
+    grid-template-columns: repeat(8, 1fr);
     /* Subgrid compatibility on Phone */
     grid-column: 1 / 9;
     gap: 0.4rem;
     text-align: left;
 }
+
+@supports (grid-template-columns: subgrid) {
+    .labels, .guesses, .input {
+        padding: 0.4rem;
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / 9;
+        gap: 0.4rem;
+        text-align: left;
+    }    
+}
+
 
 .labels {
     font-weight: 600;
