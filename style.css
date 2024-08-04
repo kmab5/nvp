@@ -222,7 +222,7 @@ button:hover {
 }
 
 .nav.drop.dropped > *:not(:first-child) {
-    display: inline-flex;
+    display: inline;
 }
 
 .display {
