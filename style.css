@@ -207,17 +207,18 @@ button:hover {
 
 #menu {
     padding: 0.8rem;
-    width: 4rem;
-    height: 4rem;
+    width: 3.2rem;
+    height: 3.2rem;
+    cursor: pointer;
 }
 
 .nav.drop > *:not(:first-child) {
     display: none;
-    background-color: aqua;
 }
 
 .nav.drop.dropped {
-    height: 100vh;
+    /* height: 100vh; */
+    gap: 1rem;
 }
 
 .nav.drop.dropped > *:not(:first-child) {
