@@ -12,6 +12,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import handler from '../api/game.js';
+import healthHandler from '../api/health.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PORT = Number(process.env.PORT) || 3000;
@@ -45,6 +46,10 @@ function adapt(res) {
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
+
+  if (url.pathname === '/api/health') {
+    return healthHandler({ method: req.method }, adapt(res));
+  }
 
   if (url.pathname === '/api/game') {
     const body = req.method === 'POST' ? await collectBody(req) : undefined;

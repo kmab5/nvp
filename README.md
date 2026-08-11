@@ -77,8 +77,55 @@ and two players will not land in the same one.
 `api/_lib/store.js` also accepts `UPSTASH_REDIS_REST_URL` / `..._TOKEN` if you'd
 rather bring your own. **Without either pair it falls back to in-memory storage**,
 which is fine locally and will behave erratically in production — rooms appear to
-vanish as requests hit different instances. The API reports which driver is live
-in its `persistent` field, and `npm start` prints it at boot.
+vanish as requests hit different instances.
+
+### Checking it actually worked
+
+A quick manual test can lie to you here: if you create a room and it seems to
+work, that may just mean one request landed on a warm instance that still has
+last time's in-memory state, not that Redis is connected. The failure only shows
+up once two players hit two *different* instances, which a solo click-through
+won't reproduce. Three ways to check for real, cheapest first:
+
+**1. Ask the deployed app directly.**
+
+```bash
+curl https://your-app.vercel.app/api/health
+```
+
+```json
+{ "driver": "redis", "persistent": true, "ok": true, "roundTripMs": 42 }
+```
+
+`driver` tells you which storage backend is actually live — not which one you
+configured, which one the code is using. If it says `"memory"` in production,
+the env vars never reached the deployed functions (check they're set for the
+**Production** environment specifically, not just Preview). Curl it again a
+minute later; a driver that flips between `redis` and `memory` across requests
+means only some instances see the credentials.
+
+**2. Check your real credentials before you even deploy.**
+
+```bash
+# with KV_REST_API_URL / KV_REST_API_TOKEN in a local .env, or exported
+npm run check-storage
+```
+
+This performs an actual write, read-back, and a deliberately stale write against
+your database — the same compare-and-swap the game relies on for every guess —
+and tells you plainly whether it held up. It's the same check `/api/health` does
+in production, run from your machine against the same credentials before they're
+live.
+
+**3. Play a real cross-device match.** Deploy, then open the site on two separate
+devices (or a phone plus a laptop — two tabs on one machine can share more state
+than you'd expect). Create a room on one, join from the other, play it out. If a
+room ever reports itself full when it shouldn't, or a valid room code 404s, that's
+the in-memory fallback showing through — recheck step 1.
+
+If you ever change providers or rotate a token, rerun `check-storage` before
+redeploying — a stale or read-only token is the most common failure, and it looks
+identical to "everything's fine" until the first write.
 
 ## How it works
 
@@ -89,8 +136,9 @@ one serverless function, and the game rules in a file both sides import.
 shared/engine.js     rules, scoring, turn order, match resolution
 src/                 client: match controllers, screens, UI components
 api/game.js          the entire backend — one endpoint
+api/health.js        driver + round-trip check, curl this after deploying
 api/_lib/            room model and the storage adapter
-scripts/             dev server, tests, browser walkthrough
+scripts/             dev server, tests, storage checks, browser walkthrough
 ```
 
 A few decisions worth knowing about if you come back to this later:
@@ -148,8 +196,11 @@ those two words wear for the rest of the game.
 
 `npm test` covers the rules, the symmetry of scoring, turn order, match
 resolution including the both-crack-in-one-round draw, CPU strength across 660
-games, and the online API end to end — secret leakage, turn enforcement, the
-rematch handshake and concurrent writes.
+games, the online API end to end (secret leakage, turn enforcement, the rematch
+handshake, concurrent writes), and — against a mock of Upstash's REST protocol —
+that the Redis driver itself sends well-formed commands and survives a real race.
+None of that touches your actual database; see "Checking it actually worked"
+above for that.
 
 `scripts/browsertest.py` drives a real browser through all three modes including
 a two-context online match, and writes screenshots. It needs Playwright:
