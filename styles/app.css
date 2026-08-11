@@ -372,11 +372,11 @@ button { font: inherit; color: inherit; }
   gap: var(--gap-2);
   color: var(--muted);
 }
-.rules li::before {
-  content: '—';
+.rules__mark {
   font-family: var(--font-mono);
   color: var(--purple-500);
 }
+.rules__text { min-width: 0; }
 
 .worked {
   display: grid;

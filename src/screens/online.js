@@ -20,9 +20,24 @@ export function onlineScreen(host, { app, params = {} }) {
   let error = null;
   let busy = false;
   let resumable = null;
+  let storageWarning = null;
 
   const body = h('div', { class: 'setup' });
   replace(host, h('section', { class: 'screen screen--narrow' }, body));
+
+  async function checkStorage() {
+    const health = await api.health();
+    // Silent on a failed check itself — a host who can't reach /api/health has a
+    // bigger problem than this banner, and it'll surface soon enough elsewhere.
+    // This only warns about the specific failure mode that looks like nothing's
+    // wrong until a second player shows up on a different server instance.
+    if (health && health.persistent === false) {
+      storageWarning = 'This deployment has no persistent storage connected. Rooms may '
+        + 'appear to vanish for the second player. If you\'re the one running this site, '
+        + 'connect Redis (see the README) before relying on online play.';
+      render();
+    }
+  }
 
   async function checkResumable() {
     const saved = prefs.session.read();
@@ -138,6 +153,8 @@ export function onlineScreen(host, { app, params = {} }) {
         )
         : null,
 
+      storageWarning ? h('p', { class: 'alert', role: 'alert' }, storageWarning) : null,
+
       h(
         'label',
         { class: 'field' },
@@ -182,5 +199,6 @@ export function onlineScreen(host, { app, params = {} }) {
 
   render();
   checkResumable();
+  checkStorage();
   return { destroy() {} };
 }

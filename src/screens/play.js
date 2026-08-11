@@ -33,6 +33,7 @@ export function playScreen(host, { match, app }) {
   let visibleBoard = 0;
   let error = null;
   let copied = false;
+  let resultHidden = false;
   let signature = '';
   const seen = new Map();       // board key -> how many rows we have already shown
   const notesBySeat = new Map();
@@ -100,6 +101,14 @@ export function playScreen(host, { match, app }) {
         h('span', { class: 'hud__dot' }),
         who,
       ));
+    }
+
+    if (view.phase === 'over' && resultHidden) {
+      parts.push(h('button', {
+        class: 'btn btn--quiet',
+        type: 'button',
+        onclick: () => { resultHidden = false; render(); },
+      }, '← Show result'));
     }
 
     if (view.connection === 'stalled') {
@@ -345,6 +354,7 @@ export function playScreen(host, { match, app }) {
 
     const result = view.result;
     if (!result) return replace(overlayHost);
+    if (resultHidden) return replace(overlayHost);
 
     const titleClass = result.kind === 'draw'
       ? 'overlay__title'
@@ -387,6 +397,11 @@ export function playScreen(host, { match, app }) {
           h('button', {
             class: 'btn btn--ghost',
             type: 'button',
+            onclick: () => { resultHidden = true; render(); },
+          }, 'View final board'),
+          h('button', {
+            class: 'btn btn--ghost',
+            type: 'button',
             onclick: () => app.leaveMatch(),
           }, 'Main menu'),
           h('button', {
@@ -395,6 +410,7 @@ export function playScreen(host, { match, app }) {
             disabled: Boolean(result.pending && /Waiting/.test(result.pending)),
             onclick: () => {
               error = null;
+              resultHidden = false;
               seen.clear();
               for (const notes of notesBySeat.values()) notes.clear();
               guessPad?.reset();
@@ -422,7 +438,7 @@ export function playScreen(host, { match, app }) {
       view.handoff, view.notice, view.connection, view.result,
       (view.boards || []).map((b) => [b.key, b.title, b.guesses.length, b.active]),
       view.secretPrompt,
-      error, copied, sfx.enabled(), visibleBoard,
+      error, copied, resultHidden, sfx.enabled(), visibleBoard,
     ]);
   }
 

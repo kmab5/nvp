@@ -44,6 +44,9 @@ export const api = {
     `${ENDPOINT}?room=${encodeURIComponent(room)}&token=${encodeURIComponent(token)}`,
     { cache: 'no-store' },
   ]),
+  // Deliberately doesn't throw — a broken health check should never block the
+  // lobby, only skip the warning banner that depends on it.
+  health: () => request(['/api/health', { cache: 'no-store' }]).catch(() => null),
 };
 
 /**

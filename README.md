@@ -62,22 +62,35 @@ you have the CLI.
 Import the repo — there's no build step, so the defaults are right. Framework
 preset **Other**, build command empty, output directory the repo root.
 
-### Online play needs Redis
+### Online play needs Redis — and it's free at this scale
 
 Everything except online multiplayer works with zero configuration. Online rooms
 need shared storage, because Vercel runs each request in a short-lived instance
-and two players will not land in the same one.
+and two players will not land in the same one — **this is true whether you poll
+or use WebSockets.** Vercel does support WebSockets natively now, but a
+connection is pinned to the instance that accepted it, there's no built-in way to
+broadcast between instances, and Vercel's own guidance for exactly this situation
+is to use Redis for durable state. Switching transports doesn't remove the need
+for shared storage; it's the same requirement either way.
 
-1. In your Vercel project: **Storage → Create Database → Upstash Redis** (the
-   free tier is far more than this game needs).
+The good news: Upstash's free tier is 256MB and 500,000 commands a month, no
+credit card required, and has been stable at that allowance since March 2025. A
+single match here runs somewhere around 2,000–3,000 commands total across both
+players' polling — call it a couple hundred matches a month before you'd ever be
+billed.
+
+1. In your Vercel project: **Storage → Create Database → Upstash Redis**.
 2. Connect it to the project. That injects `KV_REST_API_URL` and
-   `KV_REST_API_TOKEN` automatically.
+   `KV_REST_API_TOKEN` automatically, for the **Production** environment as well
+   as Preview — double check both if you connected it a while ago.
 3. Redeploy.
 
 `api/_lib/store.js` also accepts `UPSTASH_REDIS_REST_URL` / `..._TOKEN` if you'd
-rather bring your own. **Without either pair it falls back to in-memory storage**,
-which is fine locally and will behave erratically in production — rooms appear to
-vanish as requests hit different instances.
+rather bring your own. **Without either pair it falls back to in-memory
+storage**, which is fine locally and will behave erratically in production —
+each request can land in a different instance with empty memory, so a room can
+look like it vanished within seconds of being created. The online lobby now
+checks this itself and shows a banner if it detects the fallback is live.
 
 ### Checking it actually worked
 

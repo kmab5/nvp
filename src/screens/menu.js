@@ -42,6 +42,25 @@ function keywordRow(letter, word, gloss, variant) {
   );
 }
 
+/**
+ * One rule item, guaranteed to be exactly two real elements: a bullet and a
+ * text span. `.rules li` lays those two out in a two-column grid — mixing raw
+ * text nodes and inline elements as direct grid children instead would leave
+ * the browser to decide how many grid items that actually is, and every extra
+ * item after the first two spills into a new row starting back at column one,
+ * where it's stuck rewrapping one word per line inside the narrow bullet
+ * column. Wrapping the varied inline content (text, `<strong>`, whatever) in
+ * one span sidesteps that entirely: there are always exactly two items.
+ */
+function rule(...content) {
+  return h(
+    'li',
+    null,
+    h('span', { class: 'rules__mark', 'aria-hidden': 'true' }, '—'),
+    h('span', { class: 'rules__text' }, ...content),
+  );
+}
+
 export function menuScreen(host, { app }) {
   const record = prefs.summary();
 
@@ -130,11 +149,17 @@ export function rulesScreen(host, { app }) {
     h(
       'ul',
       { class: 'rules' },
-      h('li', null, h('strong', null, 'Four digits'), ', drawn from 1 to 9.'),
-      h('li', null, h('strong', null, 'No zero'), ' and ', h('strong', null, 'no repeats'), ' — in codes or in guesses. Every digit counts exactly once, which keeps the two scores unambiguous.'),
-      h('li', null, h('strong', null, 'Value'), ' counts the digits you named that appear anywhere in their code.'),
-      h('li', null, h('strong', null, 'Position'), ' counts how many of those landed in the right slot. Position is never higher than Value.'),
-      h('li', null, 'Position 4 means you have it. ', h('strong', null, 'Both players always finish the round'), ' — so going first is an advantage, not a win, and matching a crack in the same round is a draw.'),
+      rule(h('strong', null, 'Four digits'), ', drawn from 1 to 9.'),
+      rule(
+        h('strong', null, 'No zero'), ' and ', h('strong', null, 'no repeats'),
+        ' — in codes or in guesses. Every digit counts exactly once, which keeps the two scores unambiguous.',
+      ),
+      rule(h('strong', null, 'Value'), ' counts the digits you named that appear anywhere in their code.'),
+      rule(h('strong', null, 'Position'), ' counts how many of those landed in the right slot. Position is never higher than Value.'),
+      rule(
+        'Position 4 means you have it. ', h('strong', null, 'Both players always finish the round'),
+        ' — so going first is an advantage, not a win, and matching a crack in the same round is a draw.',
+      ),
     ),
     example,
     h('h2', null, 'Reading the ledger'),
