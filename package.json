@@ -1,0 +1,12 @@
+{
+  "name": "nvp",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Number Value Position \u2014 a two-player code-cracking duel",
+  "scripts": {
+    "start": "node scripts/dev-server.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node scripts/selftest.mjs && node scripts/apitest.mjs"
+  }
+}
