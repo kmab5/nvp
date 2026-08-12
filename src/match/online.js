@@ -99,11 +99,20 @@ export function createOnlineMatch({ room, token, seat, initialState }) {
       sfx.play(key === 'won' ? 'crack' : key === 'lost' ? 'lose' : 'turn');
     }
 
-    const pending = server.me.wantsRematch
-      ? `Waiting for ${opponent ? opponent.name : 'your opponent'} to accept.`
-      : (opponent && opponent.wantsRematch
-        ? `${opponent.name} wants a rematch.`
-        : null);
+    // Structured rather than a prose string: the play screen needs to decide
+    // between "waiting on them", "they are asking you" and "they are gone",
+    // and each of those is a different set of buttons.
+    const rematch = {
+      iWant: Boolean(server.me.wantsRematch),
+      theyWant: Boolean(opponent && opponent.wantsRematch),
+      opponentPresent: Boolean(opponent),
+      opponentName: opponent ? opponent.name : 'Your opponent',
+    };
+    const pending = !rematch.opponentPresent
+      ? 'They left the room.'
+      : (rematch.iWant
+        ? `Waiting for ${rematch.opponentName} to accept.`
+        : (rematch.theyWant ? `${rematch.opponentName} wants a rematch.` : null));
 
     if (exhausted) {
       return {
@@ -112,6 +121,7 @@ export function createOnlineMatch({ room, token, seat, initialState }) {
         detail: `${server.result.rounds} rounds each and neither code fell.`,
         reveals,
         pending,
+        rematch,
       };
     }
     if (outcome === 'draw') {
@@ -121,6 +131,7 @@ export function createOnlineMatch({ room, token, seat, initialState }) {
         detail: `Both codes fell in round ${server.result.rounds}.`,
         reveals,
         pending,
+        rematch,
       };
     }
     return {
@@ -132,6 +143,7 @@ export function createOnlineMatch({ room, token, seat, initialState }) {
           + `${server.result.rounds === 1 ? 'round' : 'rounds'}.`,
       reveals,
       pending,
+      rematch,
     };
   }
 
@@ -232,6 +244,20 @@ export function createOnlineMatch({ room, token, seat, initialState }) {
 
     rematch() {
       return send(() => api.rematch(room, token, true));
+    },
+
+    /**
+     * Declining leaves the room outright rather than just clearing the flag.
+     * A player who says no is done, and freeing the seat is what tells the
+     * other side to stop waiting — there is no "no thanks, but I'm still here"
+     * state worth modelling for a two-player game.
+     */
+    declineRematch() {
+      return send(() => api.rematch(room, token, false)).then(() => {
+        poller.stop();
+        prefs.session.clear();
+        return api.leave(room, token).catch(() => {});
+      });
     },
 
     quit() {

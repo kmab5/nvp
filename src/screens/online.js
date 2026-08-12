@@ -106,6 +106,7 @@ export function onlineScreen(host, { app, params = {} }) {
       value: code,
       placeholder: 'ABC12',
       maxlength: 5,
+      size: 5,
       autocapitalize: 'characters',
       autocomplete: 'off',
       spellcheck: 'false',
@@ -180,14 +181,17 @@ export function onlineScreen(host, { app, params = {} }) {
 
       h('p', { class: 'eyebrow', style: { textAlign: 'center' } }, 'or join with a code'),
 
-      h('div', { class: 'field field--code' }, codeInput),
-
-      h('button', {
-        class: 'btn btn--wide',
-        type: 'button',
-        disabled: busy,
-        onclick: join,
-      }, 'Join room'),
+      h(
+        'div',
+        { class: 'joinrow' },
+        h('div', { class: 'field field--code' }, codeInput),
+        h('button', {
+          class: 'btn',
+          type: 'button',
+          disabled: busy,
+          onclick: join,
+        }, 'Join'),
+      ),
 
       h('button', {
         class: 'btn btn--quiet',

@@ -142,6 +142,16 @@ async function handleLeave(res, body) {
     if (!seat) return undefined;
     room.seats[seat] = null;
     if (!room.seats.A && !room.seats.B) return { ...room, closed: true };
+    // Whoever is left is now waiting for a fresh opponent, so wipe their board
+    // too. Without this the next person to join walks into the leaver's
+    // half-finished match: the remaining player still holds a secret and a
+    // guess history, and the room resumes mid-game against someone who was
+    // never part of it.
+    const survivor = room.seats.A || room.seats.B;
+    survivor.secret = null;
+    survivor.guesses = [];
+    survivor.rematch = false;
+    room.epoch += 1;
     return room;
   });
   return send(res, 200, { ok: true });

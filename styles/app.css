@@ -110,6 +110,10 @@ button { font: inherit; color: inherit; }
 }
 
 .field input {
+  width: 100%;
+  /* Inputs default to an intrinsic ~20-character width, which at 320px forces
+     the whole column wider than the viewport. */
+  min-width: 0;
   min-height: 44px;
   padding: 0.55rem 0.8rem;
   background: var(--sunken);
@@ -123,10 +127,11 @@ button { font: inherit; color: inherit; }
 
 .field--code input {
   font-family: var(--font-mono);
-  font-size: var(--step-2);
-  letter-spacing: 0.45em;
+  font-size: clamp(1.05rem, 4.5vw, 1.4rem);
+  letter-spacing: clamp(0.12em, 2.5vw, 0.45em);
   text-align: center;
   text-transform: uppercase;
+  min-width: 0;
 }
 
 .panel {
@@ -201,7 +206,7 @@ button { font: inherit; color: inherit; }
   width: 100%;
   max-width: 68rem;
   margin: 0 auto;
-  padding: clamp(1.2rem, 4vw, 3rem) clamp(0.9rem, 3vw, 2rem) var(--gap-6);
+  padding: clamp(1.2rem, 4vw, 3rem) clamp(1.1rem, 3vw, 2rem) var(--gap-5);
 }
 
 .screen--narrow { max-width: 34rem; }
@@ -389,7 +394,10 @@ button { font: inherit; color: inherit; }
 
 /* --- setup -------------------------------------------------------------- */
 
-.setup { display: grid; gap: var(--gap-4); }
+.setup { display: grid; gap: var(--gap-4); min-width: 0; }
+/* Grid items default to min-width:auto and refuse to shrink below their
+   min-content width; this lets them. */
+.setup > * { min-width: 0; }
 
 .setup__head { display: grid; gap: var(--gap-1); }
 .setup__title { font-size: var(--step-3); font-weight: 700; letter-spacing: var(--track-tight); }
@@ -535,6 +543,10 @@ button { font: inherit; color: inherit; }
   font-size: var(--step--1);
   color: var(--faint);
   text-align: center;
+}
+
+@media (pointer: coarse) {
+  .pad__hint { display: none; }
 }
 
 /* --- notes tracker ------------------------------------------------------ */
@@ -809,6 +821,19 @@ button { font: inherit; color: inherit; }
   letter-spacing: var(--track-tight);
 }
 
+/* Same shape as .overlay__actions but scoped to the console, so the two sets of
+   end-of-match buttons stay independently styleable and unambiguous. */
+.console__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap-2);
+  width: 100%;
+  max-width: 30rem;
+  margin-top: var(--gap-2);
+}
+.console__actions .btn { flex: 1 1 9rem; }
+
 .thinking {
   display: inline-flex;
   gap: 5px;
@@ -934,6 +959,14 @@ button { font: inherit; color: inherit; }
 
 /* --- online lobby ------------------------------------------------------- */
 
+.joinrow {
+  display: flex;
+  gap: var(--gap-2);
+  align-items: stretch;
+}
+.joinrow .field { flex: 1; min-width: 0; }
+.joinrow .btn { flex: 0 0 auto; padding-inline: 1.3rem; }
+
 .roomcode {
   display: grid;
   gap: var(--gap-2);
@@ -999,6 +1032,20 @@ button { font: inherit; color: inherit; }
   .segmented { display: flex; }
   .board[data-hidden='true'] { display: none; }
   .hero { padding-bottom: var(--gap-4); }
+
+  .console, .board { padding: var(--gap-2); }
+  .console__status { padding: var(--gap-3) var(--gap-2); }
+  .overlay__card { padding: var(--gap-3); }
+  /* Stack end-of-match buttons rather than squeezing three or four onto a row
+     where the labels would truncate. */
+  .overlay__actions .btn,
+  .console__actions .btn { flex: 1 1 100%; }
+}
+
+@media (max-width: 26rem) {
+  .row { grid-template-columns: 1.3rem auto 1fr auto; gap: var(--gap-1); }
+  .row__digit { width: 1.4rem; font-size: var(--step--1); }
+  .hud { padding: var(--gap-2); gap: var(--gap-1) var(--gap-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {

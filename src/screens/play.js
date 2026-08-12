@@ -287,7 +287,19 @@ export function playScreen(host, { match, app }) {
     }
 
     if (view.phase === 'over') {
-      return replace(consoleEl, statusBlock('Match over', 'Rematch or head back to the menu.'));
+      const status = endStatus(view);
+      return replace(consoleEl, h(
+        'div',
+        { class: 'console__status' },
+        h('p', { class: 'eyebrow' }, 'Match over'),
+        h('p', { class: 'console__status-title' }, view.result ? view.result.title : 'Match over'),
+        status ? h('p', { class: 'dim' }, status) : null,
+        h(
+          'div',
+          { class: 'console__actions' },
+          ...endActions(view, 'console'),
+        ),
+      ));
     }
 
     // playing
@@ -331,6 +343,105 @@ export function playScreen(host, { match, app }) {
     ));
   }
 
+  /**
+   * The end-of-match controls, built once and rendered in two places: inside the
+   * result overlay, and in the console once the overlay is dismissed to look at
+   * the board. Duplicating them would let the two drift, and the console copy is
+   * the one that matters — a player who clicks "View final board" must not be
+   * stranded with no way to rematch or leave.
+   *
+   * @param {'overlay'|'console'} placement
+   */
+  function endActions(view, placement) {
+    const result = view.result;
+    const rematch = result.rematch;
+    const buttons = [];
+
+    if (placement === 'overlay') {
+      buttons.push(h('button', {
+        class: 'btn btn--ghost',
+        type: 'button',
+        onclick: () => { resultHidden = true; render(); },
+      }, 'View final board'));
+    } else {
+      buttons.push(h('button', {
+        class: 'btn btn--ghost',
+        type: 'button',
+        onclick: () => { resultHidden = false; render(); },
+      }, 'Show result'));
+    }
+
+    buttons.push(h('button', {
+      class: 'btn btn--ghost',
+      type: 'button',
+      onclick: () => app.leaveMatch(),
+    }, 'Main menu'));
+
+    // Offline modes: nobody to negotiate with, so replaying is unconditional.
+    if (view.mode !== 'online') {
+      buttons.push(h('button', {
+        class: 'btn btn--primary',
+        type: 'button',
+        onclick: startRematch,
+      }, 'Play again'));
+      return buttons;
+    }
+
+    if (rematch && !rematch.opponentPresent) {
+      // Nothing to accept — the seat is empty.
+      return buttons;
+    }
+
+    if (rematch && rematch.theyWant && !rematch.iWant) {
+      buttons.push(h('button', {
+        class: 'btn btn--ghost',
+        type: 'button',
+        onclick: async () => {
+          await match.declineRematch();
+          app.leaveMatch();
+        },
+      }, 'Decline'));
+      buttons.push(h('button', {
+        class: 'btn btn--primary',
+        type: 'button',
+        onclick: startRematch,
+      }, 'Accept rematch'));
+      return buttons;
+    }
+
+    buttons.push(h('button', {
+      class: 'btn btn--primary',
+      type: 'button',
+      disabled: Boolean(rematch && rematch.iWant),
+      onclick: startRematch,
+    }, rematch && rematch.iWant ? 'Waiting…' : 'Rematch'));
+    return buttons;
+  }
+
+  function startRematch() {
+    error = null;
+    resultHidden = false;
+    seen.clear();
+    for (const notes of notesBySeat.values()) notes.clear();
+    guessPad?.reset();
+    secretPad?.reset();
+    match.rematch();
+  }
+
+  /** The one-line status above the end-of-match buttons, if there is one. */
+  function endStatus(view) {
+    const result = view.result;
+    if (!result) return null;
+    const rematch = result.rematch;
+    if (rematch && !rematch.opponentPresent) {
+      return `${rematch.opponentName} left the room.`;
+    }
+    if (rematch && rematch.theyWant && !rematch.iWant) {
+      return `${rematch.opponentName} wants a rematch.`;
+    }
+    return result.pending || null;
+  }
+
   function renderOverlays(view) {
     if (view.handoff) {
       return replace(overlayHost, h(
@@ -360,9 +471,7 @@ export function playScreen(host, { match, app }) {
       ? 'overlay__title'
       : `overlay__title ${/^You /.test(result.title) ? 'overlay__title--win' : 'overlay__title--loss'}`;
 
-    const rematchLabel = view.mode === 'online'
-      ? (result.pending && /Waiting/.test(result.pending) ? 'Waiting…' : 'Rematch')
-      : 'Play again';
+    const status = endStatus(view);
 
     return replace(overlayHost, h(
       'div',
@@ -390,35 +499,8 @@ export function playScreen(host, { match, app }) {
             h('span', { class: 'reveal__code' }, item.code || '····'),
           )),
         ),
-        result.pending ? h('p', { class: 'note' }, result.pending) : null,
-        h(
-          'div',
-          { class: 'overlay__actions' },
-          h('button', {
-            class: 'btn btn--ghost',
-            type: 'button',
-            onclick: () => { resultHidden = true; render(); },
-          }, 'View final board'),
-          h('button', {
-            class: 'btn btn--ghost',
-            type: 'button',
-            onclick: () => app.leaveMatch(),
-          }, 'Main menu'),
-          h('button', {
-            class: 'btn btn--primary',
-            type: 'button',
-            disabled: Boolean(result.pending && /Waiting/.test(result.pending)),
-            onclick: () => {
-              error = null;
-              resultHidden = false;
-              seen.clear();
-              for (const notes of notesBySeat.values()) notes.clear();
-              guessPad?.reset();
-              secretPad?.reset();
-              match.rematch();
-            },
-          }, rematchLabel),
-        ),
+        status ? h('p', { class: 'note' }, status) : null,
+        h('div', { class: 'overlay__actions' }, ...endActions(view, 'overlay')),
       ),
     ));
   }

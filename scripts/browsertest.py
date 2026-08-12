@@ -54,19 +54,25 @@ with sync_playwright() as p:
     page.wait_for_selector(".console__grid", timeout=5000)
     shot(page, "05-cpu-play")
 
-    # play a few rounds
+    # play a few rounds — the CPU can end it early, so don't insist on a full three
     for guess in ["5678", "9512", "3467"]:
-        page.wait_for_selector(".console--live .pad__keys .key:not([disabled])", timeout=8000)
+        if page.locator(".overlay__card").count():
+            break
+        try:
+            page.wait_for_selector(".console--live .pad__keys .key:not([disabled])", timeout=8000)
+        except Exception:
+            break
         type_code(page, guess)
         page.click("button:has-text('Submit guess')")
         time.sleep(1.6)
     shot(page, "06-cpu-midgame")
 
-    # notes pad
-    page.click(".notes .pip-btn:has-text('7')")
-    page.click(".notes .pip-btn:has-text('7')")
-    page.click(".notes .pip-btn:has-text('3')")
-    shot(page, "07-notes")
+    # notes pad (only present while a turn is live)
+    if page.locator(".notes").count():
+        page.click(".notes .pip-btn:has-text('7')")
+        page.click(".notes .pip-btn:has-text('7')")
+        page.click(".notes .pip-btn:has-text('3')")
+        shot(page, "07-notes")
 
     # force an end: walk distinct valid codes until somebody cracks one
     import itertools
@@ -161,7 +167,7 @@ with sync_playwright() as p:
     guest.goto(f"{BASE}/?room={room}", wait_until="load")
     guest.wait_for_selector("input[placeholder='Player 1']")
     guest.fill("input[placeholder='Player 1']", "Nardos")
-    guest.click("button:has-text('Join room')")
+    guest.click(".joinrow button:has-text('Join')")
 
     host.wait_for_selector(".pad__keys", timeout=10000)
     guest.wait_for_selector(".pad__keys", timeout=10000)
@@ -187,10 +193,10 @@ with sync_playwright() as p:
     print("online guest:", guest.locator(".overlay__title").inner_text())
 
     # rematch handshake
-    host.click(".overlay__actions button:has-text('Rematch')")
+    host.locator(".overlay__actions button:has-text('Rematch')").click()
     time.sleep(1.0)
     shot(host, "21-online-rematch-pending")
-    guest.click(".overlay__actions button:has-text('Rematch')")
+    guest.locator(".overlay__actions button:has-text('Accept rematch')").click()
     host.wait_for_selector(".pad__keys", timeout=12000)
     guest.wait_for_selector(".pad__keys", timeout=12000)
     shot(host, "22-online-rematch-fresh")

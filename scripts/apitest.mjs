@@ -127,6 +127,40 @@ assert.equal((await post({ action: 'leave', room: room2, token: B2 })).status, 2
 assert.equal((await get(room2, B2)).status, 403);
 assert.equal((await get(room2, A2)).body.state.phase, 'waiting');
 
+// the survivor must be reset, or the next joiner inherits a half-played match
+state = (await get(room2, A2)).body.state;
+assert.equal(state.me.codeLocked, false, 'survivor secret cleared on opponent leave');
+assert.equal(state.me.guesses.length, 0, 'survivor guesses cleared on opponent leave');
+
+const C2 = (await post({ action: 'join', room: room2, name: 'Fresh' })).body.token;
+state = (await get(room2, C2)).body.state;
+assert.equal(state.phase, 'setup', 'a new joiner starts a clean match');
+assert.equal(state.opponent.codeLocked, false);
+assert.equal(state.opponent.guesses.length, 0);
+
+// --- declining a rematch frees the seat ----------------------------------
+const r3 = await post({ action: 'create', name: 'P1' });
+const room3 = r3.body.room;
+const A3 = r3.body.token;
+const B3 = (await post({ action: 'join', room: room3, name: 'P2' })).body.token;
+await post({ action: 'secret', room: room3, token: A3, code: '1234' });
+await post({ action: 'secret', room: room3, token: B3, code: '5678' });
+await post({ action: 'guess', room: room3, token: A3, code: '5678' });
+await post({ action: 'guess', room: room3, token: B3, code: '9123' });
+assert.equal((await get(room3, A3)).body.state.phase, 'over');
+
+// A asks, B declines by leaving
+await post({ action: 'rematch', room: room3, token: A3, want: true });
+assert.equal((await get(room3, A3)).body.state.me.wantsRematch, true);
+assert.equal((await get(room3, B3)).body.state.opponent.wantsRematch, true,
+  'the other player can see the request');
+await post({ action: 'rematch', room: room3, token: B3, want: false });
+await post({ action: 'leave', room: room3, token: B3 });
+state = (await get(room3, A3)).body.state;
+assert.equal(state.opponent, null, 'declining frees the seat');
+assert.equal(state.phase, 'waiting');
+assert.equal(state.me.wantsRematch, false, 'the stale request is cleared too');
+
 assert.equal((await post({ action: 'nonsense' })).status, 400);
 assert.equal((await call('PUT', { body: {} })).status, 405);
 
