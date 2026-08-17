@@ -8,6 +8,7 @@
 
 import { h, replace, svg } from './ui/dom.js';
 import { menuScreen, rulesScreen } from './screens/menu.js';
+import { dailyScreen } from './screens/daily.js';
 import { localSetupScreen, cpuSetupScreen } from './screens/setup.js';
 import { onlineScreen } from './screens/online.js';
 import { playScreen } from './screens/play.js';
@@ -15,6 +16,7 @@ import { createLocalMatch } from './match/local.js';
 import { createCpuMatch } from './match/cpu.js';
 import { createOnlineMatch } from './match/online.js';
 import * as prefs from './prefs.js';
+import * as pwa from './pwa.js';
 
 function mark() {
   // NVP's own mark: four slots, two solved. Purple for the game, green for a
@@ -42,11 +44,34 @@ function shell() {
     h('span', { class: 'brand__word' }, 'NVP'),
   );
 
+  const status = h('div', { class: 'topbar__status' });
+
+  function renderStatus() {
+    const bits = [];
+    if (!pwa.isOnline()) {
+      bits.push(h('span', { class: 'pill pill--warn', title: 'Online rooms need a connection' }, 'Offline'));
+    }
+    if (pwa.hasUpdate()) {
+      bits.push(h('button', {
+        class: 'pill pill--action',
+        type: 'button',
+        // Never automatic: activating the new worker reloads the page, and
+        // doing that mid-match would cost someone their turn.
+        onclick: () => pwa.applyUpdate(),
+      }, 'Update ready'));
+    }
+    replace(status, ...bits);
+  }
+
+  pwa.subscribe(renderStatus);
+  renderStatus();
+
   const topbar = h(
     'div',
     { class: 'topbar' },
     brand,
     h('span', { class: 'topbar__spacer' }),
+    status,
     h('span', { class: 'eyebrow' }, 'Number · Value · Position'),
   );
 
@@ -69,6 +94,7 @@ const { host, brand } = shell();
 const SCREENS = {
   menu: menuScreen,
   rules: rulesScreen,
+  daily: dailyScreen,
   local: localSetupScreen,
   cpu: cpuSetupScreen,
   online: onlineScreen,
@@ -134,12 +160,19 @@ brand.addEventListener('click', () => {
   app.leaveMatch();
 });
 
+pwa.register();
+
 // A shared invite link (?room=ABC12) drops you straight into the join flow.
 const params = new URLSearchParams(window.location.search);
 const invited = params.get('room');
+// Home-screen shortcuts from the manifest land here (?mode=cpu / ?mode=local).
+const shortcut = params.get('mode');
 
 if (invited) {
   app.go('online', { params: { room: invited } });
+} else if (shortcut === 'cpu' || shortcut === 'local' || shortcut === 'online' || shortcut === 'daily') {
+  history.replaceState(null, '', window.location.pathname);
+  app.go(shortcut);
 } else if (prefs.session.read()) {
   app.go('online');
 } else {

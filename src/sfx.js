@@ -4,6 +4,7 @@
  */
 
 import * as prefs from './prefs.js';
+import * as haptics from './haptics.js';
 
 let ctx = null;
 
@@ -54,7 +55,14 @@ const VOICES = {
   turn: () => tone({ freq: 700, dur: 0.07, type: 'sine', gain: 0.03 }),
 };
 
+/**
+ * The single feedback entry point: one call fires both the sound and the
+ * matching vibration. They are toggled independently — someone playing muted
+ * still wants to feel a cracked code, and someone who finds vibration annoying
+ * still wants the audio — so neither switch gates the other.
+ */
 export function play(name) {
+  haptics.fire(name);
   if (!prefs.get('sound', true)) return;
   const voice = VOICES[name];
   if (!voice) return;

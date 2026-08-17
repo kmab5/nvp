@@ -5,9 +5,11 @@
   "type": "module",
   "description": "Number Value Position \u2014 a two-player code-cracking duel",
   "scripts": {
-    "start": "node scripts/dev-server.mjs",
-    "dev": "node scripts/dev-server.mjs",
-    "test": "node scripts/selftest.mjs && node scripts/apitest.mjs && node scripts/redistest.mjs",
+    "start": "node scripts/gen-precache.mjs && node scripts/dev-server.mjs",
+    "dev": "node scripts/gen-precache.mjs && node scripts/dev-server.mjs",
+    "precache": "node scripts/gen-precache.mjs",
+    "build": "node scripts/gen-precache.mjs",
+    "test": "node scripts/selftest.mjs && node scripts/apitest.mjs && node scripts/redistest.mjs && node scripts/dailytest.mjs",
     "check-storage": "node scripts/check-storage.mjs"
   }
 }

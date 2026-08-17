@@ -26,6 +26,26 @@ export function playScreen(host, { match, app }) {
   const consoleEl = h('div', { class: 'console' });
   const overlayHost = h('div');
 
+  /**
+   * Keep the screen awake during a match. Thinking about a guess involves
+   * long stretches of not touching anything, and a phone dimming mid-deduction
+   * is exactly the wrong moment. Released on teardown, and re-acquired after
+   * the OS drops it on tab switch.
+   */
+  let wakeLock = null;
+  async function acquireWakeLock() {
+    if (!('wakeLock' in navigator) || document.hidden) return;
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch {
+      /* denied, unsupported, or battery saver — not worth surfacing */
+    }
+  }
+  const onVisible = () => { if (!document.hidden && !wakeLock) acquireWakeLock(); };
+  document.addEventListener('visibilitychange', onVisible);
+  acquireWakeLock();
+
   play.append(hud, segmented, boardsEl, consoleEl);
   root.append(play, overlayHost);
   replace(host, root);
@@ -539,6 +559,9 @@ export function playScreen(host, { match, app }) {
       off();
       guessPad?.destroy();
       secretPad?.destroy();
+      document.removeEventListener('visibilitychange', onVisible);
+      wakeLock?.release().catch(() => {});
+      wakeLock = null;
     },
   };
 }

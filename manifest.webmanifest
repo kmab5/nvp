@@ -1,5 +1,5 @@
 {
-  "name": "NVP — Number Value Position",
+  "name": "NVP \u2014 Number Value Position",
   "short_name": "NVP",
   "description": "A two-player code-cracking duel.",
   "start_url": "/",
@@ -8,8 +8,55 @@
   "theme_color": "#0E0E11",
   "orientation": "portrait-primary",
   "icons": [
-    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
-    { "src": "/assets/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" },
-    { "src": "/assets/icon.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/assets/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "/",
+  "scope": "/",
+  "categories": [
+    "games",
+    "puzzle"
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "shortcuts": [
+    {
+      "name": "Play the CPU",
+      "short_name": "CPU",
+      "url": "/?mode=cpu"
+    },
+    {
+      "name": "Pass and play",
+      "short_name": "Local",
+      "url": "/?mode=local"
+    }
   ]
 }

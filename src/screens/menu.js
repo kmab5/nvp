@@ -10,6 +10,10 @@
 import { h, replace, plural } from '../ui/dom.js';
 import { ledgerRow } from '../ui/ledger.js';
 import * as prefs from '../prefs.js';
+import * as pwa from '../pwa.js';
+import * as sfx from '../sfx.js';
+import * as haptics from '../haptics.js';
+import { puzzleNumber, MAX_ATTEMPTS, streakFrom } from '../../shared/daily.js';
 
 const MODES = [
   {
@@ -62,62 +66,184 @@ function rule(...content) {
 }
 
 export function menuScreen(host, { app }) {
-  const record = prefs.summary();
+  const root = h('section', { class: 'screen' });
+  replace(host, root);
 
-  const hero = h(
-    'header',
-    { class: 'hero' },
-    h('p', { class: 'eyebrow' }, 'A code-cracking duel'),
-    h(
+  function installBlock() {
+    const offer = pwa.installOffer();
+    if (!offer) return null;
+
+    const dismiss = h('button', {
+      class: 'btn btn--quiet',
+      type: 'button',
+      onclick: () => pwa.snoozeInstall(),
+    }, 'Not now');
+
+    if (offer === 'prompt') {
+      return h(
+        'div',
+        { class: 'install' },
+        h(
+          'div',
+          { class: 'install__text' },
+          h('p', { class: 'eyebrow' }, 'Install'),
+          h('p', null, 'Add NVP to your home screen. Pass-and-play and the CPU work with no signal at all.'),
+        ),
+        h(
+          'div',
+          { class: 'install__actions' },
+          dismiss,
+          h('button', {
+            class: 'btn btn--primary',
+            type: 'button',
+            onclick: () => pwa.promptInstall(),
+          }, 'Install'),
+        ),
+      );
+    }
+
+    // iOS: no install event exists, so describe the manual route instead.
+    return h(
       'div',
-      { class: 'keyword' },
-      keywordRow('N', 'umber', 'Four digits, 1 to 9, none repeated.', 'n'),
-      keywordRow('V', 'alue', 'How many of your digits are in their code.', 'v'),
-      keywordRow('P', 'osition', 'How many of those are in the right slot.', 'p'),
-    ),
-    h(
-      'p',
-      { class: 'hero__lede' },
-      'You each hide a code. You take turns guessing. Every guess comes back scored '
-      + 'on those two numbers and nothing else — first to read the other\'s code wins.',
-    ),
-  );
+      { class: 'install' },
+      h(
+        'div',
+        { class: 'install__text' },
+        h('p', { class: 'eyebrow' }, 'Add to home screen'),
+        h(
+          'p',
+          null,
+          'Tap Share, then ',
+          h('strong', null, 'Add to Home Screen'),
+          ' — NVP then runs full screen, and works offline against the CPU.',
+        ),
+      ),
+      h('div', { class: 'install__actions' }, dismiss),
+    );
+  }
 
-  const modes = h('div', { class: 'modes' }, ...MODES.map((mode) => h(
-    'button',
-    { class: 'mode', type: 'button', onclick: () => app.go(mode.id) },
-    h('div', { class: 'mode__tiles', 'aria-hidden': 'true' }, ...mode.tiles.map((state) => h('span', {
-      class: `mode__tile ${state === 1 ? 'mode__tile--on' : ''} ${state === 2 ? 'mode__tile--half' : ''}`,
-    }))),
-    h('span', { class: 'mode__name' }, mode.name),
-    h('span', { class: 'mode__desc' }, mode.desc),
-  )));
+  function settingsRow() {
+    const toggles = [
+      h('button', {
+        class: `chip-toggle ${sfx.enabled() ? 'chip-toggle--on' : ''}`,
+        type: 'button',
+        'aria-pressed': String(sfx.enabled()),
+        onclick: () => { sfx.toggle(); render(); },
+      }, sfx.enabled() ? 'Sound on' : 'Sound off'),
+    ];
+    // Only offer the vibration switch where vibration exists — on iOS the API
+    // is absent, and a dead toggle is worse than no toggle.
+    if (haptics.supported()) {
+      toggles.push(h('button', {
+        class: `chip-toggle ${haptics.enabled() ? 'chip-toggle--on' : ''}`,
+        type: 'button',
+        'aria-pressed': String(haptics.enabled()),
+        onclick: () => { haptics.toggle(); render(); },
+      }, haptics.enabled() ? 'Vibration on' : 'Vibration off'));
+    }
+    return h('div', { class: 'settings-row' }, ...toggles);
+  }
 
-  const stats = record.played
-    ? h(
+  function dailyCard() {
+    const history = prefs.get('daily.history', {}) || {};
+    const number = puzzleNumber();
+    const today = history[new Date().toISOString().slice(0, 10)];
+    const streak = streakFrom(history);
+    const done = Boolean(today?.finished);
+
+    return h(
+      'button',
+      { class: 'daily-card', type: 'button', onclick: () => app.go('daily') },
+      h(
+        'div',
+        { class: 'daily-card__text' },
+        h('p', { class: 'eyebrow' }, `Daily · puzzle #${number}`),
+        h('p', { class: 'daily-card__title' }, done ? 'Today: done' : 'Play today\'s code'),
+        h(
+          'p',
+          { class: 'daily-card__sub' },
+          done
+            ? (today.solved
+              ? `Solved in ${today.attempts}. Come back tomorrow.`
+              : 'Not solved today. Try again tomorrow.')
+            : `One code, everyone, ${MAX_ATTEMPTS} attempts.`,
+        ),
+      ),
+      streak > 0 ? h('span', { class: 'daily-card__streak' }, `🔥 ${streak}`) : null,
+    );
+  }
+
+  function render() {
+    const record = prefs.summary();
+
+    const hero = h(
+      'header',
+      { class: 'hero' },
+      h('p', { class: 'eyebrow' }, 'A code-cracking duel'),
+      h(
+        'div',
+        { class: 'keyword' },
+        keywordRow('N', 'umber', 'Four digits, 1 to 9, none repeated.', 'n'),
+        keywordRow('V', 'alue', 'How many of your digits are in their code.', 'v'),
+        keywordRow('P', 'osition', 'How many of those are in the right slot.', 'p'),
+      ),
+      h(
+        'p',
+        { class: 'hero__lede' },
+        'You each hide a code. You take turns guessing. Every guess comes back scored '
+        + 'on those two numbers and nothing else — first to read the other\'s code wins.',
+      ),
+    );
+
+    const offline = !pwa.isOnline();
+
+    const modes = h('div', { class: 'modes' }, ...MODES.map((mode) => {
+      const unavailable = offline && mode.id === 'online';
+      return h(
+        'button',
+        {
+          class: `mode ${unavailable ? 'mode--off' : ''}`,
+          type: 'button',
+          disabled: unavailable,
+          onclick: () => app.go(mode.id),
+        },
+        h('div', { class: 'mode__tiles', 'aria-hidden': 'true' }, ...mode.tiles.map((state) => h('span', {
+          class: `mode__tile ${state === 1 ? 'mode__tile--on' : ''} ${state === 2 ? 'mode__tile--half' : ''}`,
+        }))),
+        h('span', { class: 'mode__name' }, mode.name),
+        h('span', { class: 'mode__desc' }, unavailable ? 'Needs a connection — you are offline.' : mode.desc),
+      );
+    }));
+
+    const stats = record.played
+      ? h(
+        'div',
+        { class: 'statline' },
+        h('span', null, plural(record.played, 'match', 'matches'), ' played'),
+        h('span', null, h('b', null, String(record.wins)), ' won'),
+        record.best
+          ? h('span', null, 'fastest crack: ', h('b', null, `${record.best} rounds`))
+          : null,
+      )
+      : null;
+
+    const extra = h(
       'div',
       { class: 'statline' },
-      h('span', null, plural(record.played, 'match', 'matches'), ' played'),
-      h('span', null, h('b', null, String(record.wins)), ' won'),
-      record.best
-        ? h('span', null, 'fastest crack: ', h('b', null, `${record.best} rounds`))
-        : null,
-    )
-    : null;
+      h('button', {
+        class: 'btn btn--ghost',
+        type: 'button',
+        onclick: () => app.go('rules'),
+      }, 'How to play'),
+      h('span', null, 'Four digits, two numbers back, no second chances.'),
+    );
 
-  const extra = h(
-    'div',
-    { class: 'statline' },
-    h('button', {
-      class: 'btn btn--ghost',
-      type: 'button',
-      onclick: () => app.go('rules'),
-    }, 'How to play'),
-    h('span', null, 'Four digits, two numbers back, no second chances.'),
-  );
+    replace(root, hero, dailyCard(), installBlock(), modes, stats, extra, settingsRow());
+  }
 
-  replace(host, h('section', { class: 'screen' }, hero, modes, stats, extra));
-  return { destroy() {} };
+  const off = pwa.subscribe(render);
+  render();
+  return { destroy: off };
 }
 
 export function rulesScreen(host, { app }) {
